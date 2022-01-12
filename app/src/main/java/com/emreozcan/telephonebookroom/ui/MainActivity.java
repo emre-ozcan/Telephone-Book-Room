@@ -10,10 +10,12 @@ import android.view.View;
 
 import com.emreozcan.telephonebookroom.R;
 import com.emreozcan.telephonebookroom.adapter.RecyclerCardAdapter;
+import com.emreozcan.telephonebookroom.data.RoomDB;
 import com.emreozcan.telephonebookroom.model.PhoneBook;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +26,10 @@ public class MainActivity extends AppCompatActivity {
     /**Recycler View'da Gösterilecek Olan Itemların Adaptörünün Tanımlanması*/
     private RecyclerCardAdapter recyclerCardAdapter;
 
-    private ArrayList<PhoneBook> personList;
+    private List<PhoneBook> personList;
+
+    /**Room Database Tanımlanması*/
+    private RoomDB database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +40,24 @@ public class MainActivity extends AppCompatActivity {
         rvMain = findViewById(R.id.rvMain);
         fab = findViewById(R.id.floatingActionButton);
 
-        setPersonList();
+        //setPersonList();
 
         /**Recycler View'ın Görünüm Tipinin Belirlenmesi*/
         rvMain.setLayoutManager(new LinearLayoutManager(this));
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,AddActivity.class);
+                intent.putExtra("isFromFab",true);
+                startActivity(intent);
+            }
+        });
+
+
+        /**Database Oluşturulması*/
+        database = RoomDB.getInstance(this);
+        personList = database.databaseDao().loadAllPersons();
 
         /**Adaptörün Initialize Edilmesi*/
         recyclerCardAdapter = new RecyclerCardAdapter(personList);
@@ -46,14 +65,6 @@ public class MainActivity extends AppCompatActivity {
         /**Adaptörün Recycler View'a Bağlanması*/
         rvMain.setAdapter(recyclerCardAdapter);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,AddActivity.class));
-            }
-        });
-
-        //TODO Kişi verileri database tarafından gelmeli
     }
 
     private void setPersonList(){

@@ -1,5 +1,6 @@
 package com.emreozcan.telephonebookroom.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.emreozcan.telephonebookroom.R;
 import com.emreozcan.telephonebookroom.model.PhoneBook;
+import com.emreozcan.telephonebookroom.ui.AddActivity;
+import com.emreozcan.telephonebookroom.ui.MainActivity;
 
 import java.util.List;
 
@@ -45,6 +48,16 @@ public class RecyclerCardAdapter extends RecyclerView.Adapter<RecyclerCardAdapte
 
         holder.tvCardName.setText(phoneBook.getPersonName());
         holder.tvCardNumber.setText(phoneBook.getPersonNumber());
+
+        holder.itemView.getRootView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), AddActivity.class);
+                intent.putExtra("person",phoneBook);
+
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
